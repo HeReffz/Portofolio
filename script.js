@@ -631,3 +631,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+// v4: center offset pakai clientWidth bukan innerWidth
