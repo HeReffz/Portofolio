@@ -464,5 +464,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 120);
     }
 
+    // ----------------------------------------------------------------------
+    // GitHub Exact Profile Contribution Heatmap (302 Contributions Match)
+    // ----------------------------------------------------------------------
+    const exactGithubGrid = document.getElementById('github-exact-grid');
+    if (exactGithubGrid) {
+        exactGithubGrid.innerHTML = '';
 
+        // Map exact weeks & days matching Screenshot 1:
+        // Week index 0..51 (Aug to Jul), Day index 0..6 (Sun=0, Mon=1, Tue=2, Wed=3, Thu=4, Fri=5, Sat=6)
+        const exactContribMap = {
+            33: { 0: 2 },                      // Late Mar
+            34: { 1: 3, 2: 3, 3: 2, 5: 3 },   // Apr
+            35: { 2: 3 },
+            36: { 1: 3 },
+            37: { 1: 4 },                      // May
+            38: { 1: 4, 2: 4, 3: 4, 4: 3 },
+            39: { 3: 3 },
+            40: { 1: 2 },
+            43: { 3: 3 },                      // Jun
+            45: { 1: 3 },
+            46: { 2: 3 },
+            47: { 0: 2 },                      // Jul
+            48: { 0: 4, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4 }, // Full dense column!
+            49: { 0: 4, 1: 4, 2: 4, 3: 4 },
+            50: { 1: 3, 2: 3 }
+        };
+
+        for (let w = 0; w < 52; w++) {
+            for (let d = 0; d < 7; d++) {
+                const square = document.createElement('div');
+                square.className = 'g-sq lvl-0';
+
+                if (exactContribMap[w] && exactContribMap[w][d] !== undefined) {
+                    const lvl = exactContribMap[w][d];
+                    square.className = `g-sq lvl-${lvl}`;
+                }
+
+                exactGithubGrid.appendChild(square);
+            }
+        }
+    }
 });
