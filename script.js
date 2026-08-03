@@ -298,15 +298,24 @@ document.addEventListener('DOMContentLoaded', () => {
             delay: 0.1
         });
 
-        gsap.from('.hud-card', {
-            opacity: 0,
-            y: 40,
-            duration: 1,
-            stagger: 0.1,
-            ease: 'power3.out',
-            delay: 0.5,
-            clearProps: 'transform'
-        });
+        // Bulletproof IntersectionObserver & ScrollTrigger 1-by-1 Entrance for HUD Cards
+        const hudCards = document.querySelectorAll('.hud-card');
+        if (hudCards.length > 0) {
+            const hudObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px -40px 0px',
+                threshold: 0.1
+            });
+
+            hudCards.forEach(card => hudObserver.observe(card));
+        }
 
         // Parallax Image Scroll Trigger
         const parallaxImgs = document.querySelectorAll('.parallax-img');
@@ -506,4 +515,119 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    // ----------------------------------------------------------------------
+    // Mobile HUD Track Slider — Seamless CSS translateX Engine + Touch Swipe
+    // ----------------------------------------------------------------------
+    const hudTrack = document.getElementById('hud-cards-track');
+    const hudDotsContainer = document.getElementById('hud-carousel-dots');
+
+    if (hudTrack && hudDotsContainer) {
+        const cards = hudTrack.querySelectorAll('.hud-card');
+        const dots = hudDotsContainer.querySelectorAll('.hud-dot-btn');
+        let currentSlide = 0;
+        let slideTimer = null;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function getSlideOffset(index) {
+            if (cards.length === 0) return 0;
+            const vpEl      = hudTrack.parentElement;
+            const vpRect    = vpEl.getBoundingClientRect();
+            const vpLeft    = vpRect.left;   // actual left edge of viewport on screen
+            const cardW     = cards[0].getBoundingClientRect().width;
+            const gap       = parseFloat(getComputedStyle(hudTrack).gap) || 12;
+            // True screen center in viewport-relative coordinates
+            const screenW      = document.documentElement.clientWidth;
+            const screenCenter = (screenW / 2) - vpLeft;
+            // Offset to place active card's center at screen center
+            const centerOffset = screenCenter - (cardW / 2);
+            return centerOffset - index * (cardW + gap);
+        }
+
+        function goToSlide(index) {
+            currentSlide = ((index % cards.length) + cards.length) % cards.length;
+
+            // Pixel-accurate center slide
+            const offset = getSlideOffset(currentSlide);
+            hudTrack.style.transform = `translateX(${offset}px)`;
+
+            // Active state per card
+            cards.forEach((card, i) => {
+                if (i === currentSlide) {
+                    card.classList.add('active-card', 'is-visible');
+                } else {
+                    card.classList.remove('active-card');
+                }
+            });
+
+            // Dot state
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active-dot', i === currentSlide);
+            });
+        }
+
+        function startAutoSlide() {
+            if (window.innerWidth <= 768) {
+                stopAutoSlide();
+                slideTimer = setInterval(() => goToSlide(currentSlide + 1), 3500);
+            }
+        }
+
+        function stopAutoSlide() {
+            clearInterval(slideTimer);
+            slideTimer = null;
+        }
+
+        // Dot click nav
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                goToSlide(parseInt(dot.getAttribute('data-slide')));
+                startAutoSlide();
+            });
+        });
+
+        // Touch swipe support with live drag
+        hudTrack.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].clientX;
+            stopAutoSlide();
+        }, { passive: true });
+
+        hudTrack.addEventListener('touchmove', e => {
+            const dx   = e.changedTouches[0].clientX - touchStartX;
+            const base = getSlideOffset(currentSlide); // positive = right, negative = left
+            hudTrack.style.transition = 'none';
+            hudTrack.style.transform  = `translateX(${base + dx}px)`;
+        }, { passive: true });
+
+        hudTrack.addEventListener('touchend', e => {
+            hudTrack.style.transition = '';
+            touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                goToSlide(diff > 0 ? currentSlide + 1 : currentSlide - 1);
+            } else {
+                // snap back to exact center
+                hudTrack.style.transform = `translateX(${getSlideOffset(currentSlide)}px)`;
+            }
+            startAutoSlide();
+        }, { passive: true });
+
+        // Init on mobile
+        function initCarousel() {
+            if (window.innerWidth <= 768) {
+                goToSlide(0);
+                startAutoSlide();
+            } else {
+                stopAutoSlide();
+                hudTrack.style.transform = '';
+                cards.forEach(card => card.classList.remove('active-card'));
+                cards.forEach(card => card.classList.add('is-visible'));
+            }
+        }
+
+        initCarousel();
+        window.addEventListener('resize', initCarousel);
+    }
+
 });

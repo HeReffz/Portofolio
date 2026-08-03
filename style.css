@@ -70,6 +70,8 @@ html.lenis, html.lenis body {
 html, body {
     -ms-overflow-style: none;
     scrollbar-width: none;
+    width: 100%;
+    max-width: 100%;
 }
 
 body {
@@ -77,7 +79,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-primary);
     line-height: 1.6;
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
     position: relative;
     transition: background-color 0.5s var(--ease-out-expo), color 0.5s var(--ease-out-expo);
     -webkit-font-smoothing: antialiased;
@@ -311,7 +314,8 @@ body {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     height: 100vh;
     pointer-events: none;
     z-index: 0;
@@ -577,16 +581,22 @@ body {
     filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.85)) contrast(110%);
 }
 
-/* Bottom HUD Cards Row */
-.hud-cards-row {
+/* Bottom HUD Cards Container */
+.hud-cards-viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 4;
+    margin-top: 0.5rem;
+}
+
+.hud-cards-track {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.2rem;
     width: 100%;
-    position: relative;
-    z-index: 4;
-    margin-top: 0.5rem;
-    transform: translateY(0px);
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
 }
 
 .hud-card {
@@ -596,15 +606,25 @@ body {
     backdrop-filter: blur(12px);
     border-radius: 14px;
     clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-    transform: translateY(0px);
-    transition: transform 0.35s var(--ease-out-expo), border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease;
-    will-change: transform;
+    opacity: 0;
+    transform: translateY(45px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.35s ease, 
+                background-color 0.35s ease, 
+                box-shadow 0.35s ease;
+    will-change: opacity, transform;
 }
 
-.hud-card:hover {
+.hud-card.is-visible {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.hud-card.is-visible:hover {
     border-color: var(--hairline-border-hover);
     background-color: var(--card-hover-bg);
-    transform: translateY(-14px) !important;
+    transform: translateY(-10px) !important;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
@@ -648,6 +668,53 @@ body {
     opacity: 0.7;
 }
 
+/* Mobile HUD Carousel Navigation (Hidden on Desktop) */
+.hud-carousel-dots {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.55rem 1rem;
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--hairline-border);
+    border-radius: 99px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .hud-carousel-dots {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.hud-dot-btn {
+    width: 6px;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--text-secondary);
+    opacity: 0.4;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s var(--ease-out-expo);
+    padding: 0;
+}
+
+.hud-dot-btn.active-dot {
+    width: 20px;
+    opacity: 1;
+    background: var(--text-primary);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="light"] .hud-dot-btn.active-dot {
+    background: var(--text-primary);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
 /* 7. Marquee Strip (Sits ON TOP of Section 1 to Cover Photo Spill) */
 .marquee-strip {
     width: 100%;
@@ -686,9 +753,10 @@ body {
 .main-sections-wrapper {
     width: 100%;
     position: relative;
-    z-index: 20;
+    z-index: 100 !important;
+    overflow-x: hidden;
     background-color: var(--bg-color);
-    box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.5);
     transition: background-color 0.5s ease;
 }
 
@@ -1274,7 +1342,7 @@ body {
 /* 14. Responsive Media Queries */
 @media (max-width: 1024px) {
     .cyber-hero-section {
-        padding-top: 7.5rem;
+        padding-top: 7rem;
     }
 
     .hud-cards-row {
@@ -1282,16 +1350,13 @@ body {
     }
     
     .hero-top-meta {
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: space-between;
         gap: 1rem;
     }
 
-    .meta-badge-right {
-        text-align: left;
-    }
-
     .giant-backdrop-text {
-        font-size: clamp(3rem, 10vw, 8rem);
+        font-size: clamp(3.5rem, 12vw, 10rem);
     }
 
     .table-row {
@@ -1305,29 +1370,320 @@ body {
 }
 
 @media (max-width: 768px) {
+    /* Prevent horizontal page scroll caused by 100vw carousel breakout.
+       overflow-x: clip (unlike hidden) does NOT break position: sticky */
+    html, body {
+        overflow-x: clip;
+    }
+
+    .cyber-navbar {
+        padding: 0.8rem 1.2rem;
+        backdrop-filter: blur(16px);
+        background-color: rgba(10, 10, 12, 0.85);
+    }
+
+    [data-theme="light"] .cyber-navbar {
+        background-color: rgba(248, 249, 250, 0.85);
+    }
+
     .nav-menu {
         display: none;
     }
 
-    .hud-cards-row {
-        grid-template-columns: 1fr;
+    .nav-actions {
+        gap: 0.6rem;
+    }
+
+    .nav-actions .hud-btn-primary {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.72rem;
+    }
+
+    .cyber-hero-section {
+        padding-top: 5.5rem;
+        padding-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1 !important;
+        overflow: visible !important;
+    }
+
+    /* Clean Borderless Top Metadata Row */
+    .hero-top-meta {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0 0.5rem;
+        margin-bottom: 0.5rem;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        backdrop-filter: none;
+        box-shadow: none;
+    }
+
+    [data-theme="light"] .hero-top-meta {
+        background: transparent;
+    }
+
+    .badge-tag {
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+    }
+
+    .badge-sub {
+        font-size: 0.68rem;
+        color: var(--text-secondary);
+    }
+
+    .meta-badge-right {
+        text-align: right;
+    }
+
+    /* Full-Bleed Grand Mobile Hero Stage */
+    .hero-center-core {
+        position: relative;
+        width: 100%;
+        min-height: 460px;
+        height: clamp(460px, 70vh, 620px);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        overflow: visible;
+        border: none;
+        background: transparent;
+        border-radius: 0;
+    }
+
+    .giant-backdrop-text {
+        font-size: clamp(3.8rem, 20vw, 8.5rem);
+        top: 48%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.18;
+    }
+
+    .hero-subject-container {
+        position: absolute; /* fill the hero-center-core */
+        inset: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        overflow: visible;
+    }
+
+    .hero-subject-img {
+        width: auto;
+        height: 145%;        /* overflow keluar hero box, seperti desktop */
+        max-height: none;
+        transform: translateY(8%);
+        object-fit: contain;
+        object-position: bottom center;
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.7));
+    }
+
+    .hud-cards-viewport {
+        overflow: hidden;
+        width: 100vw;
+        /* Full-bleed breakout dari padding section */
+        margin-left: calc(-50vw + 50%);
+        margin-top: -4rem; /* tarik ke atas supaya overlap foto seperti desktop */
+        position: relative;
+        z-index: 5;
+        /* Fade mask — peek cards visible, only very edge fades */
+        -webkit-mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 5%,
+            black 95%,
+            transparent 100%
+        );
+        mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 5%,
+            black 95%,
+            transparent 100%
+        );
+    }
+
+
+    .hud-cards-track {
+        display: flex;
+        flex-direction: row;
+        gap: 0.75rem;
+        transition: transform 0.58s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform;
+    }
+
+    .hud-card {
+        flex: 0 0 70%;
+        width: 70%;
+        display: block !important;
+        opacity: 0.28 !important;
+        transform: none !important;
+        transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        filter: none !important;
+        /* === Identik dengan Desktop === */
+        padding: 1.6rem 1.4rem;
+        border-radius: 14px;
+        border: 1px solid var(--hairline-border);
+        background-color: var(--card-bg);
+        backdrop-filter: blur(12px);
+        clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+        box-shadow: none !important;
+    }
+
+    /* Override IntersectionObserver is-visible on non-active carousel cards */
+    .hud-card.is-visible:not(.active-card) {
+        opacity: 0.28 !important;
+        box-shadow: none !important;
+    }
+
+    .hud-card.active-card {
+        opacity: 1 !important;
+        border-color: var(--hairline-border-hover);
+    }
+
+    .hud-carousel-dots {
+        display: flex;
+        margin-top: 1.2rem;
+        /* inherits the pill glassmorphism style from base rule */
+    }
+
+    .hud-card-header {
+        font-size: 0.98rem;
+        letter-spacing: 0.04em;
+    }
+
+    .hud-card-num {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .hud-card-body {
+        font-size: 0.83rem;
+        line-height: 1.55;
+    }
+
+    .section-num {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
     }
 
     .services-hairline-grid {
         grid-template-columns: 1fr;
     }
 
+    .service-box {
+        padding: 2rem 1.5rem;
+    }
+
     .tech-matrix-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     .matrix-wide {
         grid-column: span 1;
     }
 
+    .matrix-box {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .tech-tags-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .tech-pill {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+        white-space: nowrap;
+    }
+
+    .table-row {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+        padding: 1.5rem 1.2rem;
+    }
+
+    .col-period {
+        font-size: 0.78rem;
+        color: var(--accent-cyan);
+        margin-bottom: 0.2rem;
+    }
+
+    .col-role {
+        font-size: 1.05rem;
+    }
+
+    .footer-email-btn {
+        font-size: clamp(1.05rem, 4.8vw, 1.4rem);
+        word-break: break-all;
+    }
+
     .footer-bottom-grid {
         flex-direction: column;
         align-items: flex-start;
         gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cyber-navbar {
+        padding: 0.75rem 1rem;
+    }
+
+    .logo-text {
+        font-size: 1.1rem;
+    }
+
+    .hero-top-meta {
+        padding: 0;
+        margin-bottom: 1.8rem;
+    }
+
+    .badge-tag {
+        font-size: 0.88rem;
+    }
+
+    .badge-sub {
+        font-size: 0.64rem;
+    }
+
+    .hero-center-core {
+        min-height: 320px;
+        height: 380px;
+    }
+
+    .giant-backdrop-text {
+        font-size: clamp(3rem, 18vw, 6rem);
+    }
+
+    .hero-subject-img {
+        height: 120%;
+        max-height: none;
+        transform: translateY(15px);
     }
 }

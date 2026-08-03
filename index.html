@@ -143,32 +143,42 @@
             </div>
         </div>
 
-        <!-- Bottom HUD Cards Row -->
-        <div class="hud-cards-row">
-            <div class="hud-card" data-cursor="hover">
-                <span class="hud-card-num">01.</span>
-                <h3 class="hud-card-header">WEB DEVELOPMENT</h3>
-                <p class="hud-card-body">Membangun antarmuka web modern dengan kode bersih, performa tinggi, dan animasi sinematik.</p>
-            </div>
+        <!-- Bottom HUD Cards Row (Desktop 4 Grid // Mobile Ultra-Seamless Track Slider) -->
+        <div class="hud-cards-viewport">
+            <div class="hud-cards-track" id="hud-cards-track">
+                <div class="hud-card active-card" data-index="0" data-cursor="hover">
+                    <span class="hud-card-num">01.</span>
+                    <h3 class="hud-card-header">WEB DEVELOPMENT</h3>
+                    <p class="hud-card-body">Membangun antarmuka web modern dengan kode bersih, performa tinggi, dan animasi sinematik.</p>
+                </div>
 
-            <div class="hud-card" data-cursor="hover">
-                <span class="hud-card-num">02.</span>
-                <h3 class="hud-card-header">UI/UX DESIGN</h3>
-                <p class="hud-card-body">Merancang pengalaman digital intuitif yang berpusat pada pengguna dan menyeimbangkan nilai estetika.</p>
-            </div>
+                <div class="hud-card" data-index="1" data-cursor="hover">
+                    <span class="hud-card-num">02.</span>
+                    <h3 class="hud-card-header">UI/UX DESIGN</h3>
+                    <p class="hud-card-body">Merancang pengalaman digital intuitif yang berpusat pada pengguna dan menyeimbangkan nilai estetika.</p>
+                </div>
 
-            <div class="hud-card" data-cursor="hover">
-                <span class="hud-card-num">03.</span>
-                <h3 class="hud-card-header">CREATIVE SUITE</h3>
-                <p class="hud-card-body">Penyuntingan video sinematik, motion graphics, dan branding visual profesional berkarakter.</p>
-            </div>
+                <div class="hud-card" data-index="2" data-cursor="hover">
+                    <span class="hud-card-num">03.</span>
+                    <h3 class="hud-card-header">CREATIVE SUITE</h3>
+                    <p class="hud-card-body">Penyuntingan video sinematik, motion graphics, dan branding visual profesional berkarakter.</p>
+                </div>
 
-            <div class="hud-card hud-card-danger" data-cursor="hover">
-                <div class="hazard-stripes"></div>
-                <span class="hud-card-num">04.</span>
-                <h3 class="hud-card-header">[ AVAILABLE ]</h3>
-                <p class="hud-card-body">Open for Freelance & Projects 2026. Siap mengeksekusi ide digital Anda!</p>
+                <div class="hud-card hud-card-danger" data-index="3" data-cursor="hover">
+                    <div class="hazard-stripes"></div>
+                    <span class="hud-card-num">04.</span>
+                    <h3 class="hud-card-header">[ AVAILABLE ]</h3>
+                    <p class="hud-card-body">Open for Freelance & Projects 2026. Siap mengeksekusi ide digital Anda!</p>
+                </div>
             </div>
+        </div>
+
+        <!-- Mobile HUD Carousel Navigation Dots -->
+        <div class="hud-carousel-dots" id="hud-carousel-dots">
+            <button class="hud-dot-btn active-dot" data-slide="0" aria-label="Card 1"></button>
+            <button class="hud-dot-btn" data-slide="1" aria-label="Card 2"></button>
+            <button class="hud-dot-btn" data-slide="2" aria-label="Card 3"></button>
+            <button class="hud-dot-btn" data-slide="3" aria-label="Card 4"></button>
         </div>
     </section>
 
