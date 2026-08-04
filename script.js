@@ -120,6 +120,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Cursor hide/show on viewport exit ---
+    // 1. Edge-position check on every mousemove (catches slow movements near border)
+    window.addEventListener('mousemove', (e) => {
+        const edge = 4; // px threshold near viewport edge
+        const nearEdge = e.clientX <= edge ||
+                         e.clientY <= edge ||
+                         e.clientX >= window.innerWidth  - edge ||
+                         e.clientY >= window.innerHeight - edge;
+
+        if (nearEdge) {
+            cursorDot?.classList.add('cursor-hidden');
+            cursorRing?.classList.add('cursor-hidden');
+        } else {
+            cursorDot?.classList.remove('cursor-hidden');
+            cursorRing?.classList.remove('cursor-hidden');
+        }
+    }, { passive: true });
+
+    // 2. Fallback: mouseleave on document (catches fast exits & tab switches)
+    document.addEventListener('mouseleave', (e) => {
+        if (e.relatedTarget === null) {
+            cursorDot?.classList.add('cursor-hidden');
+            cursorRing?.classList.add('cursor-hidden');
+        }
+    });
+    document.addEventListener('mouseenter', () => {
+        cursorDot?.classList.remove('cursor-hidden');
+        cursorRing?.classList.remove('cursor-hidden');
+    });
+
     // Work Item Floating Image Preview Trigger
     const workItems = document.querySelectorAll('.work-item[data-preview]');
     workItems.forEach(item => {

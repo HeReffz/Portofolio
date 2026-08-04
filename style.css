@@ -98,8 +98,11 @@ body {
     left: 0;
     pointer-events: none;
     z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease-out, background-color 0.3s ease;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.1s ease-out,
+                background-color 0.3s ease,
+                opacity 0.35s ease;
+    opacity: 1;
 }
 
 .cursor-ring {
@@ -112,8 +115,14 @@ body {
     left: 0;
     pointer-events: none;
     z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s var(--ease-out-expo), height 0.3s var(--ease-out-expo), border-color 0.3s ease, background-color 0.3s ease;
+    transform: translate(-50%, -50%) scale(1);
+    transition: width 0.3s var(--ease-out-expo),
+                height 0.3s var(--ease-out-expo),
+                border-color 0.3s ease,
+                background-color 0.3s ease,
+                transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.35s ease;
+    opacity: 1;
 }
 
 [data-theme="light"] .cursor-ring {
@@ -125,6 +134,17 @@ body {
     height: 70px;
     border-color: var(--text-primary);
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Cursor leaves the page — shrink to nothing then fade */
+.cursor-dot.cursor-hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+}
+
+.cursor-ring.cursor-hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
 }
 
 /* Floating Image Preview on Hover */
@@ -587,7 +607,10 @@ body {
     overflow: hidden;
     position: relative;
     z-index: 4;
-    margin-top: 0.5rem;
+    /* padding-top gives headroom for hover lift (overflow:hidden clips at border,
+       not content edge — so card can translateY(-10px) into the 14px padding) */
+    padding-top: 14px;
+    margin-top: calc(0.5rem - 14px); /* compensate so layout stays identical */
 }
 
 .hud-cards-track {
