@@ -663,3 +663,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // v4: center offset pakai clientWidth bukan innerWidth
+
+// cursor edge detection v2 — dual layer
