@@ -413,11 +413,11 @@ body {
     }
 }
 
-/* Top Meta Badges */
+/* Top Meta Badges & Cyberpunk Caution Alert */
 .hero-top-meta {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     position: relative;
     z-index: 3;
     padding-top: 0.4rem;
@@ -446,6 +446,200 @@ body {
 
 .meta-badge-right {
     text-align: right;
+}
+
+/* ==========================================================================
+   Cyberpunk Caution Alert (Breathing Red Triangle & Release Notice)
+   ========================================================================== */
+.cyber-caution-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.95rem;
+    background: rgba(22, 10, 14, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    border-radius: 6px;
+    clip-path: polygon(
+        7px 0, 
+        100% 0, 
+        100% calc(100% - 7px), 
+        calc(100% - 7px) 100%, 
+        0 100%, 
+        0 7px
+    );
+    position: relative;
+    cursor: default;
+    user-select: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: alertGlowBreathe 3s ease-in-out infinite;
+}
+
+.cyber-caution-alert:hover {
+    border-color: rgba(239, 68, 68, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.45), inset 0 0 14px rgba(239, 68, 68, 0.15);
+}
+
+[data-theme="light"] .cyber-caution-alert {
+    background: rgba(254, 242, 242, 0.92);
+    border-color: rgba(239, 68, 68, 0.55);
+    box-shadow: 0 4px 18px rgba(239, 68, 68, 0.12);
+}
+
+.caution-hazard-edge {
+    width: 4px;
+    height: 18px;
+    background: repeating-linear-gradient(
+        -45deg,
+        #ef4444,
+        #ef4444 3px,
+        transparent 3px,
+        transparent 6px
+    );
+    border-radius: 1px;
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+
+.caution-icon-box {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    animation: triangleBreathing 2.2s ease-in-out infinite;
+    will-change: transform, filter;
+}
+
+.caution-triangle-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.caution-triangle-svg .triangle-polygon {
+    stroke: #ef4444;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: rgba(239, 68, 68, 0.22);
+}
+
+.caution-triangle-svg .triangle-exclamation-bar {
+    stroke: #ef4444;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+}
+
+.caution-triangle-svg .triangle-exclamation-dot {
+    fill: #ef4444;
+}
+
+.caution-body {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+}
+
+.caution-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.caution-separator {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: rgba(239, 68, 68, 0.6);
+    font-weight: 700;
+}
+
+.caution-message {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-primary);
+    text-transform: uppercase;
+}
+
+[data-theme="light"] .caution-message {
+    color: #111827;
+}
+
+.caution-status-indicator {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.2rem;
+    flex-shrink: 0;
+}
+
+.caution-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+}
+
+.caution-pulse-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid #ef4444;
+    animation: beaconPulse 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+/* Triangle Red Breathing Keyframe Animation */
+@keyframes triangleBreathing {
+    0%, 100% {
+        transform: scale(0.95);
+        filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.6));
+        opacity: 0.85;
+    }
+    50% {
+        transform: scale(1.18);
+        filter: drop-shadow(0 0 10px rgba(239, 68, 68, 1)) drop-shadow(0 0 20px rgba(255, 42, 75, 0.75));
+        opacity: 1;
+    }
+}
+
+/* Alert Glow Breathing Keyframe Animation */
+@keyframes alertGlowBreathe {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.12), inset 0 0 8px rgba(239, 68, 68, 0.04);
+        border-color: rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 22px rgba(239, 68, 68, 0.35), inset 0 0 14px rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.8);
+    }
+}
+
+@keyframes beaconPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(2.6);
+        opacity: 0;
+    }
 }
 
 /* Center Core with Giant Backdrop Text PORTFOLIO & Full Screen Character Cutout */
@@ -1375,6 +1569,7 @@ body {
     .hero-top-meta {
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         gap: 1rem;
     }
 
@@ -1441,8 +1636,9 @@ body {
         width: 100%;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: center;
         padding: 0 0.5rem;
         margin-bottom: 0.5rem;
         background: transparent;
@@ -1450,6 +1646,23 @@ body {
         border-radius: 0;
         backdrop-filter: none;
         box-shadow: none;
+        gap: 0.5rem 0;
+    }
+
+    .cyber-caution-alert {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.45rem;
+        padding: 0.38rem 0.75rem;
+    }
+
+    .caution-message {
+        font-size: 0.68rem;
+    }
+
+    .caution-tag {
+        font-size: 0.62rem;
     }
 
     [data-theme="light"] .hero-top-meta {
